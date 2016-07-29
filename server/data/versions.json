@@ -1,0 +1,14 @@
+[
+    {
+        "origin": {
+            "device": "TEST",
+            "min": "*",
+            "max": "0.1.0"
+        },
+        "target": {
+            "version": "0.1.1",
+            "firmware": "/firmware/test-0.1.1.bin",
+            "spiffs": ""
+        }
+    }
+]

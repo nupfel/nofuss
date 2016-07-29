@@ -1,0 +1,5 @@
+.modgit
+.pioenvs
+vendor
+!.empty
+*.bin
