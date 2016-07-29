@@ -97,6 +97,22 @@ NoFUSSClient.setVersion(VERSION);
 
 And then call every so often ```NoFUSSClient.handle()``` to check for updates. You can also monitor the update flow providing a callback function to the ```onMessage``` method. Check the basic.cpp example for a real usage.
 
+## Notes
+
+The library uses official ESP8266httpUpdate library. Current version of the library restarts the modules after SPIFFS update, thus preventing the firmware to be updated too. There is a recent commit fixing that which is not yet pushed to PlatformIO. Check [Fix example for ESP8266httpUpdate][5] for more info.
+
+With the new version the library will work fine, but you will never get the final NOFUSS_FIRMWARE_UPDATED message since the board will reset before. To fix this modify the ESP8266httpUpdate to comment out the ```ESP.restart()``` line. The library will then emit the message and restart the board itself.
+
+```
+299,300c299,300
+<                     if(_rebootOnUpdate) {
+<                         ESP.restart();
+---
+>                     if(_rebootOnUpdate) {
+>                         //ESP.restart();
+```
+
+
 
 [1]: https://github.com/bblanchon/ArduinoJson
 [2]: https://platformio.org
