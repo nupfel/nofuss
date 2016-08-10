@@ -26,8 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Configuration
 // -----------------------------------------------------------------------------
 
-#define WIFI_SSID               "daoiz3"
-#define WIFI_PASS               "calamento"
+#define WIFI_SSID               "..."
+#define WIFI_PASS               "..."
 
 #define DEVICE                  "TEST"
 #define VERSION                 "0.1.0"

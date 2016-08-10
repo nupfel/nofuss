@@ -101,7 +101,7 @@ And then call every so often ```NoFUSSClient.handle()``` to check for updates. Y
 
 The library uses official ESP8266httpUpdate library. Current version of the library restarts the modules after SPIFFS update, thus preventing the firmware to be updated too. There is a recent commit fixing that which is not yet pushed to PlatformIO. Check [Fix example for ESP8266httpUpdate][5] for more info.
 
-With the new version the library will work fine, but you will never get the final NOFUSS_FIRMWARE_UPDATED message since the board will reset before. To fix this modify the ESP8266httpUpdate to comment out the ```ESP.restart()``` line. The library will then emit the message and restart the board itself.
+With the new version the library will work fine, but you will never get the final NOFUSS_FIRMWARE_UPDATED message since the board will reset before. To fix this modify the ESP8266httpUpdate.cpp file to comment out the ```ESP.restart()``` line. The library will then emit the message and restart the board itself.
 
 ```
 299,300c299,300
