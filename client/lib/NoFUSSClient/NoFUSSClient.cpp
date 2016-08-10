@@ -111,6 +111,8 @@ void NoFUSSClientClass::_doUpdate() {
     bool error = false;
     uint8_t updates = 0;
 
+    ESPhttpUpdate.rebootOnUpdate(false);
+
     if (_newFileSystem.length() > 0) {
 
         // Update SPIFFS
