@@ -72,11 +72,12 @@ class NoFUSSClientClass {
     int _errorNumber;
     String _errorString;
 
-    TMessageFunction _callback;
+    TMessageFunction _callback = NULL;
 
     String _getPayload();
     bool _checkUpdates();
     void _doUpdate();
+    void _doCallback(nofuss_t message);
 
 };
 

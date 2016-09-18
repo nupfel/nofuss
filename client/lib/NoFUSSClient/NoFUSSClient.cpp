@@ -59,6 +59,10 @@ String NoFUSSClientClass::getErrorString() {
     return _errorString;
 }
 
+void NoFUSSClientClass::_doCallback(nofuss_t message) {
+    if (_callback != NULL) _callback(message);
+}
+
 String NoFUSSClientClass::_getPayload() {
 
     HTTPClient http;
@@ -79,7 +83,7 @@ bool NoFUSSClientClass::_checkUpdates() {
 
     String payload = _getPayload();
     if (payload.length() == 0) {
-        _callback(NOFUSS_NO_RESPONSE_ERROR);
+        _doCallback(NOFUSS_NO_RESPONSE_ERROR);
         return false;
     }
 
@@ -87,12 +91,12 @@ bool NoFUSSClientClass::_checkUpdates() {
     JsonObject& response = jsonBuffer.parseObject(payload);
 
     if (!response.success()) {
-        _callback(NOFUSS_PARSE_ERROR);
+        _doCallback(NOFUSS_PARSE_ERROR);
         return false;
     }
 
     if (response.size() == 0) {
-        _callback(NOFUSS_UPTODATE);
+        _doCallback(NOFUSS_UPTODATE);
         return false;
     }
 
@@ -100,7 +104,7 @@ bool NoFUSSClientClass::_checkUpdates() {
     _newFileSystem = response.get<String>("spiffs");
     _newFirmware = response.get<String>("firmware");
 
-    _callback(NOFUSS_UPDATING);
+    _doCallback(NOFUSS_UPDATING);
     return true;
 
 }
@@ -123,10 +127,10 @@ void NoFUSSClientClass::_doUpdate() {
             error = true;
             _errorNumber = ESPhttpUpdate.getLastError();
             _errorString = ESPhttpUpdate.getLastErrorString();
-            _callback(NOFUSS_FILESYSTEM_UPDATE_ERROR);
+            _doCallback(NOFUSS_FILESYSTEM_UPDATE_ERROR);
         } else if (ret == HTTP_UPDATE_OK) {
             updates++;
-            _callback(NOFUSS_FILESYSTEM_UPDATED);
+            _doCallback(NOFUSS_FILESYSTEM_UPDATED);
         }
 
     }
@@ -141,25 +145,25 @@ void NoFUSSClientClass::_doUpdate() {
             error = true;
             _errorNumber = ESPhttpUpdate.getLastError();
             _errorString = ESPhttpUpdate.getLastErrorString();
-            _callback(NOFUSS_FIRMWARE_UPDATE_ERROR);
+            _doCallback(NOFUSS_FIRMWARE_UPDATE_ERROR);
         } else if (ret == HTTP_UPDATE_OK) {
             updates++;
-            _callback(NOFUSS_FIRMWARE_UPDATED);
+            _doCallback(NOFUSS_FIRMWARE_UPDATED);
         }
 
     }
 
     if (!error && (updates > 0)) {
-        _callback(NOFUSS_RESET);
+        _doCallback(NOFUSS_RESET);
         ESP.restart();
     }
 
 }
 
 void NoFUSSClientClass::handle() {
-    _callback(NOFUSS_START);
+    _doCallback(NOFUSS_START);
     if (_checkUpdates()) _doUpdate();
-    _callback(NOFUSS_END);
+    _doCallback(NOFUSS_END);
 }
 
 NoFUSSClientClass NoFUSSClient;

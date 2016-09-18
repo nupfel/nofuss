@@ -1,6 +1,7 @@
 .modgit
-.pioenvs
+.pio*
 vendor
 !.empty
 *.bin
+*.gch
 logs
