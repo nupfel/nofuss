@@ -1,35 +1,58 @@
 <?php
 
+function get(&$var, $default = null) {
+    return isset($var) ? $var : $default;
+}
+
 // Check update entry point
-$app->get('/{device}/{version}', function($request, $response, $args) {
+$app->get('/', function($request, $response, $args) {
 
     $found = false;
-    $device = $request->getAttribute('device');
-    $version = $request->getAttribute('version');
+    $headers = $request->getHeaders();
+    //$this->get('devices')->info(serialize($headers));
+    $mac = $headers['HTTP_X_ESP8266_MAC'][0];
+    $device = $headers['HTTP_X_ESP8266_DEVICE'][0];
+    $version = $headers['HTTP_X_ESP8266_VERSION'][0];
 
-    foreach ($this->get('data') as $entry) {
+    if ($mac & $device & $version ) {
 
-        if (($device == $entry['origin']['device'])
-            && (($entry['origin']['min'] == '*' || version_compare($entry['origin']['min'], $version, '<=')))
-            && (($entry['origin']['max'] == '*' || version_compare($entry['origin']['max'], $version, '>=')))) {
+        foreach ($this->get('data') as $entry) {
+
+            if ($_device = get($entry['origin']['device'])) {
+                if ($device != $_device) continue;
+            }
+
+            if ($_mac = get($entry['origin']['mac'])) {
+                if ($mac != $_mac) continue;
+            }
+
+            if ($_min = get($entry['origin']['min'])) {
+                if (($_min != '*') && version_compare($_min, $version, '>')) continue;
+            }
+
+            if ($_max = get($entry['origin']['max'])) {
+                if (($_max != '*') && version_compare($_max, $version, '<')) continue;
+            }
 
             $response->getBody()->write(stripslashes(json_encode($entry['target'])));
             $found = true;
             break;
 
-        }
-    };
+        };
+
+        $this->get('devices')->info(
+            "IP: " . $request->getAttribute('ip_address') . " "
+            . "MAC: " . $mac . " "
+            . "DEVICE: " . $device . " "
+            . "VERSION: " . $version . " "
+            . "UPDATE: " . ($found ? $entry['target']['version'] : "none")
+        );
+
+    }
 
     if (!$found) {
         $response->getBody()->write("{}");
     }
-
-    $this->get('devices')->info(
-        "from:"
-        . $request->getAttribute('ip_address')
-        . " device:$device version:$version update:"
-        . ($found ? $entry['target']['version'] : "none")
-    );
 
     return $response;
 

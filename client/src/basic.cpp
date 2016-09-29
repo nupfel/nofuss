@@ -55,7 +55,7 @@ void nofussSetup() {
         }
 
         if (code == NOFUSS_UPTODATE) {
-            Serial.println(F("[NoFUSS] Already in the last version"));
+            Serial.println(F("[NoFUSS] Nothing for me"));
         }
 
         if (code == NOFUSS_PARSE_ERROR) {

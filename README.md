@@ -4,16 +4,18 @@ NoFUSS is a **Firmware Update Server for ESP8266** modules. It defines a protoco
 
 ## The protocol
 
-This first revision of the protocol is very simple. The client device does a GET request to a custom URL specifying its DEVICE and firmware VERSION this way:
+Version 1.1 of the protocol is simple. The client device does a GET request to a custom URL along with some headers defining:
+
+|header|description|example|
+|-|-|-|
+|X-ESP8266-MAC|Device MAC address|5C:CF:7F:8B:6B:26|
+|X-ESP8266-DEVICE|Device type|SENSOR|
+|X-ESP8266-VERSION|Application version|0.1.0|
+
+The URL can be anywhere your device can reach:
 
 ```
-GET http://myNofussServerURL/DEVICE/VERSION
-```
-
-For instance:
-
-```
-GET http://192.168.1.10/nofuss/SONOFF/0.1.0
+http://192.168.1.10/nofuss
 ```
 
 The response is a JSON object. If there are no updates available it will be
@@ -62,7 +64,9 @@ Make sure the server has permissions to write on the ```logs``` folder.
 
 ## Versions
 
-The versions info is stored in the ```data/versions.json``` file. This file contains an array of objects with info about version matching and firmware files. Version matching is always "more or equal" for minimum version number and "less or equal" for maximum version number. An asterisk (\*) means "any". Device matching is "equals".
+The versions info is stored in the ```data/versions.json``` file. This file contains an array of objects with info about version matching and firmware files.
+
+The "origin" key contains filters. The server will apply those filters to the requester info. Version matching is always "more or equal" for minimum version number and "less or equal" for maximum version number. An asterisk (\*) means "any". MAC and device matching is "equals". If you define no filter (i.e. the "origin" key is empty) every request will match.
 
 The target key contains info about version number for the new firmware and paths to the firmware files relative to the ```public``` folder. If there is no binary for "firmware" or "spiffs" keys, just leave it empty.
 
@@ -70,6 +74,7 @@ The target key contains info about version number for the new firmware and paths
 [
     {
         "origin": {
+            "mac": "5C:CF:7F:8B:6B:26",
             "device": "TEST",
             "min": "*",
             "max": "0.1.0"

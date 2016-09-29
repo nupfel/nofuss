@@ -1,6 +1,6 @@
 /*
 
-NOFUSS Client
+NOFUSS Client v1.1
 Copyright (C) 2016 by Xose Pérez <xose dot perez at gmail dot com>
 
 This program is free software: you can redistribute it and/or modify
@@ -65,12 +65,19 @@ void NoFUSSClientClass::_doCallback(nofuss_t message) {
 
 String NoFUSSClientClass::_getPayload() {
 
-    HTTPClient http;
-    char url[100];
     String payload = "";
 
-    sprintf(url, "%s/%s/%s", _server.c_str(), _device.c_str(), _version.c_str());
-    http.begin(url);
+    HTTPClient http;
+    http.begin((char *) _server.c_str());
+    http.useHTTP10(true);
+    http.setTimeout(8000);
+    http.setUserAgent(F("NoFUSSClient"));
+    http.addHeader(F("X-ESP8266-MAC"), WiFi.macAddress());
+    http.addHeader(F("X-ESP8266-DEVICE"), _device);
+    http.addHeader(F("X-ESP8266-VERSION"), _version);
+    http.addHeader(F("X-ESP8266-CHIPID"), String(ESP.getChipId()));
+    http.addHeader(F("X-ESP8266-CHIPSIZE"), String(ESP.getFlashChipRealSize()));
+
     int httpCode = http.GET();
     if (httpCode > 0) payload = http.getString();
     http.end();

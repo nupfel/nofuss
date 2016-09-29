@@ -1,6 +1,6 @@
 /*
 
-NOFUSS Client
+NOFUSS Client v1.1
 Copyright (C) 2016 by Xose Pérez <xose dot perez at gmail dot com>
 
 This program is free software: you can redistribute it and/or modify
