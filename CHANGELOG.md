@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.1] 2017-01-05
+### Fixed
+- Including Stream.h to fix build error with latest ArduinoJson release (issue #1)
+
 ## [0.2.0] 2016-08-10
 
 ### Added

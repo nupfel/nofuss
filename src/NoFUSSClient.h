@@ -1,7 +1,7 @@
 /*
 
-NOFUSS Client v1.1
-Copyright (C) 2016 by Xose Pérez <xose dot perez at gmail dot com>
+NOFUSS Client 0.2.1
+Copyright (C) 2016-2017 by Xose Pérez <xose dot perez at gmail dot com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _NOFUSS_h
 
 #include <functional>
+#include <Stream.h>
 #include <ArduinoJson.h>
 #include <ESP8266httpUpdate.h>
 
