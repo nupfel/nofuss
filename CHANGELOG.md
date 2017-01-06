@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.2] 2017-01-06
+### Added
+- Default values for MAC, MIN and MAX filters
+
+### Fixed
+- Added trailing slash to example URL
+
 ## [0.2.1] 2017-01-05
 ### Fixed
 - Including Stream.h to fix build error with latest ArduinoJson release (issue #1)

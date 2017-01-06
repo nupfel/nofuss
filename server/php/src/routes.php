@@ -22,15 +22,15 @@ $app->get('/', function($request, $response, $args) {
                 if ($device != $_device) continue;
             }
 
-            if ($_mac = get($entry['origin']['mac'])) {
-                if ($mac != $_mac) continue;
+            if ($_mac = get($entry['origin']['mac'], "*")) {
+                if (($_mac != '*') && ($mac != $_mac)) continue;
             }
 
-            if ($_min = get($entry['origin']['min'])) {
+            if ($_min = get($entry['origin']['min'], "*")) {
                 if (($_min != '*') && version_compare($_min, $version, '>')) continue;
             }
 
-            if ($_max = get($entry['origin']['max'])) {
+            if ($_max = get($entry['origin']['max'], "*")) {
                 if (($_max != '*') && version_compare($_max, $version, '<')) continue;
             }
 

@@ -32,7 +32,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DEVICE                  "TEST"
 #define VERSION                 "0.1.0"
 
-#define NOFUSS_SERVER           "http://192.168.1.100"
+// Check that your server actually returns something in this URL
+// In particular, remember to add a trailing slash for root requests
+#define NOFUSS_SERVER           "http://192.168.1.100/"
 #define NOFUSS_INTERVAL         10000
 
 #define WIFI_CONNECT_TIMEOUT    5000
