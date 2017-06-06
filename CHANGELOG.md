@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.3] 2017-05-06
+### Fixed
+- Force payload response to be an HTTP code 200
+
 ## [0.2.2] 2017-01-06
 ### Added
 - Default values for MAC, MIN and MAX filters
