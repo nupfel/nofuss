@@ -80,7 +80,6 @@ String NoFUSSClientClass::_getPayload() {
     http.addHeader(F("X-ESP8266-CHIPSIZE"), String(ESP.getFlashChipRealSize()));
 
     int httpCode = http.GET();
-    DEBUG_MSG("[NOFUSS] Server response: %d %s\n", httpCode, http.errorToString(httpCode).c_str());
     if (httpCode == HTTP_CODE_OK) payload = http.getString();
     http.end();
 
