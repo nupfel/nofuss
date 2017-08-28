@@ -21,23 +21,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include "NoFUSSClient.h"
+#include "credentials.h"
 
 // -----------------------------------------------------------------------------
 // Configuration
 // -----------------------------------------------------------------------------
 
-#define WIFI_SSID               "..."
-#define WIFI_PASS               "..."
+// See credentials.h (copy it from credentials.sample.h)
+// for specific configuration
 
 #define DEVICE                  "TEST"
-#define VERSION                 "0.1.0"
-
-// Check that your server actually returns something in this URL
-// In particular, remember to add a trailing slash for root requests
-#define NOFUSS_SERVER           "http://192.168.1.100/"
+#define VERSION                 "0.0.9"
 #define NOFUSS_INTERVAL         10000
-
-#define WIFI_CONNECT_TIMEOUT    5000
+#define WIFI_CONNECT_TIMEOUT    20000
 #define WIFI_RECONNECT_DELAY    5000
 
 // -----------------------------------------------------------------------------
@@ -53,51 +49,46 @@ void nofussSetup() {
     NoFUSSClient.onMessage([](nofuss_t code) {
 
         if (code == NOFUSS_START) {
-            Serial.println(F("[NoFUSS] Start"));
+            Serial.printf("[NoFUSS] Start\n");
         }
 
         if (code == NOFUSS_UPTODATE) {
-            Serial.println(F("[NoFUSS] Nothing for me"));
+            Serial.printf("[NoFUSS] Nothing for me\n");
         }
 
         if (code == NOFUSS_PARSE_ERROR) {
-            Serial.println(F("[NoFUSS] Error parsing server response"));
+            Serial.printf("[NoFUSS] Error parsing server response\n");
         }
 
         if (code == NOFUSS_UPDATING) {
-            Serial.println(F("[NoFUSS] Updating"));
-            Serial.print(  F("         New version: "));
-            Serial.println(NoFUSSClient.getNewVersion());
-            Serial.print(  F("         Firmware: "));
-            Serial.println(NoFUSSClient.getNewFirmware());
-            Serial.print(  F("         File System: "));
-            Serial.println(NoFUSSClient.getNewFileSystem());
+            Serial.printf("[NoFUSS] Updating\n");
+            Serial.printf("         New version: %s\n", NoFUSSClient.getNewVersion().c_str());
+            Serial.printf("         Firmware: %s\n", NoFUSSClient.getNewFirmware().c_str());
+            Serial.printf("         File System: %s\n", NoFUSSClient.getNewFileSystem().c_str());
         }
 
         if (code == NOFUSS_FILESYSTEM_UPDATE_ERROR) {
-            Serial.print(F("[NoFUSS] File System Update Error: "));
-            Serial.println(NoFUSSClient.getErrorString());
+            Serial.printf("[NoFUSS] File System Update Error: %s\n", NoFUSSClient.getErrorString().c_str());
         }
 
         if (code == NOFUSS_FILESYSTEM_UPDATED) {
-            Serial.println(F("[NoFUSS] File System Updated"));
+            Serial.printf("[NoFUSS] File System Updated\n");
         }
 
         if (code == NOFUSS_FIRMWARE_UPDATE_ERROR) {
-            Serial.print(F("[NoFUSS] Firmware Update Error: "));
-            Serial.println(NoFUSSClient.getErrorString());
+            Serial.printf("[NoFUSS] Firmware Update Error: %s\n", NoFUSSClient.getErrorString().c_str());
         }
 
         if (code == NOFUSS_FIRMWARE_UPDATED) {
-            Serial.println(F("[NoFUSS] Firmware Updated"));
+            Serial.printf("[NoFUSS] Firmware Updated\n");
         }
 
         if (code == NOFUSS_RESET) {
-            Serial.println(F("[NoFUSS] Resetting board"));
+            Serial.printf("[NoFUSS] Resetting board\n");
         }
 
         if (code == NOFUSS_END) {
-            Serial.println(F("[NoFUSS] End"));
+            Serial.printf("[NoFUSS] End\n");
         }
 
     });
@@ -119,34 +110,34 @@ void nofussLoop() {
 void wifiSetup() {
 
     // Set WIFI module to STA mode
+    WiFi.mode(WIFI_OFF);
+    delay(5);
     WiFi.mode(WIFI_STA);
 
     // Connect
     WiFi.begin(WIFI_SSID, WIFI_PASS);
-    Serial.print(F("[WIFI] Connecting to "));
-    Serial.println(WIFI_SSID);
+    Serial.printf("[WIFI] Connecting to %s ", WIFI_SSID);
 
     // Wait
     unsigned long timeout = millis() + WIFI_CONNECT_TIMEOUT;
     while (timeout > millis()) {
         if (WiFi.status() == WL_CONNECTED) break;
         delay(100);
+        Serial.print(".");
     }
+    Serial.println();
 
     if (WiFi.status() == WL_CONNECTED) {
 
         // Connected!
-        Serial.print(F("[WIFI] STATION Mode, SSID: "));
-        Serial.print(WiFi.SSID());
-        Serial.print(F(", IP address: "));
-        Serial.println(WiFi.localIP());
+        Serial.printf("[WIFI] STATION Mode, SSID: %s, IP address: %s\n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
 
         // Check for updates!
         NoFUSSClient.handle();
 
     } else {
 
-        Serial.println(F("[WIFI] Not connected"));
+        Serial.printf("[WIFI] Not connected\n");
 
     }
 
@@ -172,17 +163,16 @@ void wifiLoop() {
 
 void setup() {
 
-    Serial.begin(115200);
+    delay(1000);
 
-    delay(5000);
+    Serial.begin(115200);
+    //Serial.setDebugOutput(true);
     Serial.println();
-    Serial.println();
-    Serial.print("Device : ");
-    Serial.println(DEVICE);
-    Serial.print("Version: ");
-    Serial.println(VERSION);
+    Serial.printf("[MAIN] Device: %s\n", DEVICE);
+    Serial.printf("[MAIN] Version: %s\n", VERSION);
 
     nofussSetup();
+
 }
 
 void loop() {

@@ -4,7 +4,7 @@ NoFUSS is a **Firmware Update Server for ESP8266** modules. It defines a protoco
 
 ## The protocol
 
-Version 1.1 of the protocol is simple. The client device does a GET request to a custom URL along with some headers defining:
+Current version of the protocol is simple. The client device does a GET request to a custom URL along with some headers defining:
 
 |header|description|example|
 |-|-|-|

@@ -40,6 +40,16 @@ typedef enum {
     NOFUSS_FIRMWARE_UPDATE_ERROR
 } nofuss_t;
 
+#define HTTP_TIMEOUT    10000
+#define HTTP_USERAGENT  "NoFussClient"
+
+#if defined(DEBUG_NOFUSS) & defined(DEBUG_ESP_PORT)
+    #define DEBUG_MSG(...) DEBUG_ESP_PORT.printf( __VA_ARGS__ )
+#else
+    #define DEBUG_MSG(...)
+#endif
+
+
 class NoFUSSClientClass {
 
   public:

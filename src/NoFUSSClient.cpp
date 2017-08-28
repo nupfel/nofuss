@@ -70,8 +70,9 @@ String NoFUSSClientClass::_getPayload() {
     HTTPClient http;
     http.begin((char *) _server.c_str());
     http.useHTTP10(true);
-    http.setTimeout(8000);
-    http.setUserAgent(F("NoFUSSClient"));
+    http.setReuse(false);
+    http.setTimeout(HTTP_TIMEOUT);
+    http.setUserAgent(F(HTTP_USERAGENT));
     http.addHeader(F("X-ESP8266-MAC"), WiFi.macAddress());
     http.addHeader(F("X-ESP8266-DEVICE"), _device);
     http.addHeader(F("X-ESP8266-VERSION"), _version);
@@ -79,7 +80,8 @@ String NoFUSSClientClass::_getPayload() {
     http.addHeader(F("X-ESP8266-CHIPSIZE"), String(ESP.getFlashChipRealSize()));
 
     int httpCode = http.GET();
-    if (httpCode == 200) payload = http.getString();
+    DEBUG_MSG("[NOFUSS] Server response: %d %s\n", httpCode, http.errorToString(httpCode).c_str());
+    if (httpCode == HTTP_CODE_OK) payload = http.getString();
     http.end();
 
     return payload;

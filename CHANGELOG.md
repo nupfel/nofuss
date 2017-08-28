@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.4] 2017-08-28
+### Changed
+- Some changes in examples
+- Small changes to code (increased timeout, do not reuse connection)
+
 ## [0.2.3] 2017-05-06
 ### Fixed
 - Force payload response to be an HTTP code 200
