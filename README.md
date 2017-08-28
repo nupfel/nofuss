@@ -45,6 +45,8 @@ flash it too and then restart the board.
 
 ## Installing the server
 
+### PHP
+
 The PHP server implementation depends on [Slim Framework][3], [Monolog][4] and [Akrabat IP Address Middleware][5]. They are all set as dependencies in the composer.json file, so you just have to type `php composer.phar install` from the server folder.
 
 Next you will have to configure your webserver to configure the URLs. If you are using [Apache][6] then all you have to do is create a new service pointing to the ```server/public``` folder. The ```.htaccess``` file there will take care of the rest. If you are using [Nginx][7] the create a new site file like this one:
@@ -61,6 +63,10 @@ server {
 ```
 
 Make sure the server has permissions to write on the ```logs``` folder.
+
+### NodeJS
+
+User Alex Suslov ported the NoFUSS Server to NodeJS. You can check his repo [node-nofuss repo on GitHub](https://github.com/alexsuslov/node-nofuss).
 
 ## Versions
 

@@ -6,3 +6,4 @@ vendor
 *.gch
 logs
 pio
+server/nodejs
