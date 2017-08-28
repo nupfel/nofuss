@@ -1,6 +1,6 @@
 /*
 
-NOFUSS Client 0.2.3
+NOFUSS Client 0.2.5
 Copyright (C) 2016-2017 by Xose Pérez <xose dot perez at gmail dot com>
 
 This program is free software: you can redistribute it and/or modify
@@ -80,7 +80,12 @@ String NoFUSSClientClass::_getPayload() {
     http.addHeader(F("X-ESP8266-CHIPSIZE"), String(ESP.getFlashChipRealSize()));
 
     int httpCode = http.GET();
-    if (httpCode == HTTP_CODE_OK) payload = http.getString();
+    if (httpCode == HTTP_CODE_OK) {
+        payload = http.getString();
+    } else {
+        _errorNumber = httpCode;
+        _errorString = http.errorToString(httpCode);
+    }
     http.end();
 
     return payload;
