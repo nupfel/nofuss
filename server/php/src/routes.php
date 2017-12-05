@@ -18,20 +18,31 @@ $app->get('/', function($request, $response, $args) {
 
         foreach ($this->get('data') as $entry) {
 
-            if ($_device = get($entry['origin']['device'])) {
-                if ($device != $_device) continue;
+
+            // Check same device
+            $_device = get($entry['origin']['device'], "");
+            if ($device != $_device) continue;
+
+            // Check if MAC is same or in array
+            $_mac = get($entry['origin']['mac'], "*");
+            if ($_mac != '*') {
+                if (is_array($_mac)) {
+                    if (!in_array($mac, $_mac)) continue;
+                } else {
+                    if ($mac != $_mac) continue;
+                }
             }
 
-            if ($_mac = get($entry['origin']['mac'], "*")) {
-                if (($_mac != '*') && ($mac != $_mac)) continue;
+            // Check if version is same or newer than $_min
+            $_min = get($entry['origin']['min'], "*");
+            if ($_min != '*') {
+                if (version_compare($_min, $version, '>')) continue;
             }
 
-            if ($_min = get($entry['origin']['min'], "*")) {
-                if (($_min != '*') && version_compare($_min, $version, '>')) continue;
-            }
-
-            if ($_max = get($entry['origin']['max'], "*")) {
-                if (($_max != '*') && version_compare($_max, $version, '<')) continue;
+            // Check if version is same or older than $_max
+            $_max = get($entry['origin']['max'], "*");
+            if ($_max != "*") {
+                if (version_compare($_max, $version, '<')) continue;
             }
 
             $response->getBody()->write(stripslashes(json_encode($entry['target'])));

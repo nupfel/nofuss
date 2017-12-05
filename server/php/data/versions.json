@@ -14,6 +14,9 @@
     },
     {
         "origin": {
+            "mac": [
+                "5C:CF:7F:8C:1E:6F", "5C:CF:7F:8C:1E:6E"
+            ],
             "device": "TEST",
             "min": "*",
             "max": "0.0.9"
