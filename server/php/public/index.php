@@ -9,22 +9,26 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
 
-require __DIR__ . '/../vendor/autoload.php';
+// Define the absolute path to the project root (where /vendor and /src folders are)
+$root = __DIR__ . '/..';
+//$root = __DIR__ . '/../../nofuss';
+
+require $root . '/vendor/autoload.php';
 
 session_start();
 
 // Instantiate the app
-$settings = require __DIR__ . '/../src/settings.php';
+$settings = require $root . '/src/settings.php';
 $app = new \Slim\App($settings);
 
 // Set up dependencies
-require __DIR__ . '/../src/dependencies.php';
+require $root . '/src/dependencies.php';
 
 // Register middleware
-require __DIR__ . '/../src/middleware.php';
+require $root . '/src/middleware.php';
 
 // Register routes
-require __DIR__ . '/../src/routes.php';
+require $root . '/src/routes.php';
 
 // Run app
 $app->run();
