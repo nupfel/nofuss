@@ -96,11 +96,15 @@ void nofussSetup() {
 }
 
 void nofussLoop() {
-    static unsigned long last_check = 0;
+
     if (WiFi.status() != WL_CONNECTED) return;
+
+    static unsigned long last_check = 0;
     if ((last_check > 0) && ((millis() - last_check) < NOFUSS_INTERVAL)) return;
     last_check = millis();
+
     NoFUSSClient.handle();
+
 }
 
 // -----------------------------------------------------------------------------
