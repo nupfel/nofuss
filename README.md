@@ -18,6 +18,12 @@ The URL can be anywhere your device can reach:
 http://192.168.1.10/nofuss
 ```
 
+Here you have an example call using cURL:
+
+```
+curl -H "X-ESP8266-MAC:5C:CF:7F:8C:1E:6F" -H "X-ESP8266-VERSION:0.1.0" -H "X-ESP8266-DEVICE:TEST" http://192.168.1.10/nofuss
+```
+
 The response is a JSON object. If there are no updates available it will be
 empty (that is: '{}'). Otherwise it will contain info about where to find the new firmware binaries:
 
@@ -55,7 +61,7 @@ Next you will have to configure your webserver to configure the URLs. If you are
 server {
 	listen 80 default_server;
 	server_name nofuss.local;
-	root /<path_to_project>/server/public/;
+	root /<path_to_project>/server/php/public/;
 	try_files $uri $uri/ /index.php?$query_string;
 	index index.php;
 	include global/php5-fpm.conf;
@@ -63,6 +69,16 @@ server {
 ```
 
 Make sure the server has permissions to write on the ```logs``` folder.
+
+### PHP using Docker
+
+You can use the `docker-compose.yml` file in the root of the repository to rise an instance of a local NoFUSS server using Nginx and PHP7-FPM. Just type:
+
+```
+docker-compose up
+```
+
+The docker container will use the code under `server/php` and, in particular, the database in `server/php/data/versions.json`.
 
 ### NodeJS
 

@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  
+    web:
+        container_name: nofuss_nginx
+        image: nginx:latest
+        ports:
+            - "8080:80"
+        volumes:
+            - ./server/php:/usr/share/nginx/
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+        networks:
+            - nofuss
+        restart: on-failure
+
+    php:
+        container_name: nofuss_php
+        image: php:7-fpm
+        volumes:
+            - ./server/php:/usr/share/nginx/
+        networks:
+            - nofuss
+        restart: on-failure
+
+networks:
+  nofuss:

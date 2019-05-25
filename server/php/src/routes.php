@@ -14,7 +14,7 @@ $app->get('/', function($request, $response, $args) {
     $device = $headers['HTTP_X_ESP8266_DEVICE'][0];
     $version = $headers['HTTP_X_ESP8266_VERSION'][0];
 
-    if ($mac & $device & $version ) {
+    if (($mac != "") & ($device != "") & ($version != "") ) {
 
         foreach ($this->get('data') as $entry) {
 
