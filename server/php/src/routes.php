@@ -13,11 +13,11 @@ $app->get('/', function($request, $response, $args) {
     $mac = $headers['HTTP_X_ESP8266_MAC'][0];
     $device = $headers['HTTP_X_ESP8266_DEVICE'][0];
     $version = $headers['HTTP_X_ESP8266_VERSION'][0];
+    $build = $headers['HTTP_X_ESP8266_BUILD'][0];
 
     if (($mac != "") & ($device != "") & ($version != "") ) {
 
         foreach ($this->get('data') as $entry) {
-
 
             // Check same device
             $_device = get($entry['origin']['device'], "");
@@ -43,6 +43,13 @@ $app->get('/', function($request, $response, $args) {
             $_max = get($entry['origin']['max'], "*");
             if ($_max != "*") {
                 if (version_compare($_max, $version, '<')) continue;
+            }
+
+            // Check if build is same $_build
+            $_build = get($entry['origin']['build'], "*");
+            if ($_build != "*") {
+                if ($build == "") continue;
+                if ($build == $_build) continue;
             }
 
             $response->getBody()->write(stripslashes(json_encode($entry['target'])));

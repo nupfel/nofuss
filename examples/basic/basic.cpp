@@ -32,6 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define DEVICE                  "TEST"
 #define VERSION                 "0.0.9"
+#define BUILD                   ""
 #define NOFUSS_INTERVAL         10000
 #define WIFI_CONNECT_TIMEOUT    20000
 #define WIFI_RECONNECT_DELAY    5000
@@ -45,7 +46,8 @@ void nofussSetup() {
     NoFUSSClient.setServer(NOFUSS_SERVER);
     NoFUSSClient.setDevice(DEVICE);
     NoFUSSClient.setVersion(VERSION);
-
+    NoFUSSClient.setBuild(BUILD);
+    
     NoFUSSClient.onMessage([](nofuss_t code) {
 
         if (code == NOFUSS_START) {

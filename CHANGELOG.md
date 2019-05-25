@@ -3,6 +3,16 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.6] 2017-08-28
+### Added
+- Option to define multiple MAC addresses for the same origin
+- Option to define a "build" filter for dev versions
+- Added docker-compose image
+
+### Changed
+- Documentation updates
+- Updated HTTPClient and HTTPUpdateClient libraries
+
 ## [0.2.5] 2017-08-28
 ### Changed
 - Report HTTP error for callbacks

@@ -52,6 +52,7 @@ class NoFUSSClientClass {
     void setServer(String server);
     void setDevice(String device);
     void setVersion(String version);
+    void setBuild(String build);
 
     String getNewVersion();
     String getNewFirmware();
@@ -68,6 +69,7 @@ class NoFUSSClientClass {
     String _server;
     String _device;
     String _version;
+    String _build;
 
     String _newVersion;
     String _newFirmware;

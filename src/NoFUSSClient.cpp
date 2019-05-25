@@ -35,6 +35,10 @@ void NoFUSSClientClass::setVersion(String version) {
     _version = version;
 }
 
+void NoFUSSClientClass::setBuild(String build) {
+    _build = build;
+}
+
 void NoFUSSClientClass::onMessage(TMessageFunction fn) {
     _callback = fn;
 }
@@ -67,8 +71,9 @@ String NoFUSSClientClass::_getPayload() {
 
     String payload = "";
 
+    WiFiClient client;
     HTTPClient http;
-    http.begin((char *) _server.c_str());
+    http.begin(client, (char *) _server.c_str());
     http.useHTTP10(true);
     http.setReuse(false);
     http.setTimeout(HTTP_TIMEOUT);
@@ -76,6 +81,7 @@ String NoFUSSClientClass::_getPayload() {
     http.addHeader(F("X-ESP8266-MAC"), WiFi.macAddress());
     http.addHeader(F("X-ESP8266-DEVICE"), _device);
     http.addHeader(F("X-ESP8266-VERSION"), _version);
+    http.addHeader(F("X-ESP8266-BUILD"), _build);
     http.addHeader(F("X-ESP8266-CHIPID"), String(ESP.getChipId()));
     http.addHeader(F("X-ESP8266-CHIPSIZE"), String(ESP.getFlashChipRealSize()));
 
@@ -128,13 +134,18 @@ void NoFUSSClientClass::_doUpdate() {
     bool error = false;
     uint8_t updates = 0;
 
+    WiFiClient client;
     ESPhttpUpdate.rebootOnUpdate(false);
 
     if (_newFileSystem.length() > 0) {
 
         // Update SPIFFS
-        sprintf(url, "%s/%s", _server.c_str(), _newFileSystem.c_str());
-        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(url);
+        if (_newFileSystem.startsWith("http")) {
+            sprintf(url, "%s", _newFileSystem.c_str());
+        } else {
+            sprintf(url, "%s/%s", _server.c_str(), _newFileSystem.c_str());
+        }
+        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(client, url);
 
         if (ret == HTTP_UPDATE_FAILED) {
             error = true;
@@ -151,8 +162,12 @@ void NoFUSSClientClass::_doUpdate() {
     if (!error && (_newFirmware.length() > 0)) {
 
         // Update binary
-        sprintf(url, "%s%s", _server.c_str(), _newFirmware.c_str());
-        t_httpUpdate_return ret = ESPhttpUpdate.update(url);
+        if (_newFirmware.startsWith("http")) {
+            sprintf(url, "%s", _newFirmware.c_str());
+        } else {
+            sprintf(url, "%s/%s", _server.c_str(), _newFirmware.c_str());
+        }
+        t_httpUpdate_return ret = ESPhttpUpdate.update(client, url);
 
         if (ret == HTTP_UPDATE_FAILED) {
             error = true;
