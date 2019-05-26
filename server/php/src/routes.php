@@ -63,6 +63,7 @@ $app->get('/', function($request, $response, $args) {
             . "MAC: " . $mac . " "
             . "DEVICE: " . $device . " "
             . "VERSION: " . $version . " "
+            . "BUILD: " . $build . " "
             . "UPDATE: " . ($found ? $entry['target']['version'] : "none")
         );
 

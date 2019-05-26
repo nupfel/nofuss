@@ -3,7 +3,12 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.2.6] 2017-08-28
+## [0.2.7] 2019-05-26
+### Fixed
+- Make it backwards compatible using HTTPUPDATE_1_2_COMPATIBLE flag
+- Added build header to log
+
+## [0.2.6] 2019-05-25
 ### Added
 - Option to define multiple MAC addresses for the same origin
 - Option to define a "build" filter for dev versions
