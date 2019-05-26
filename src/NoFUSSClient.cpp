@@ -71,9 +71,13 @@ String NoFUSSClientClass::_getPayload() {
 
     String payload = "";
 
-    WiFiClient client;
     HTTPClient http;
-    http.begin(client, (char *) _server.c_str());
+    #ifdef HTTPUPDATE_1_2_COMPATIBLE
+        http.begin((char *) _server.c_str());
+    #else
+        WiFiClient client;
+        http.begin(client, (char *) _server.c_str());
+    #endif
     http.useHTTP10(true);
     http.setReuse(false);
     http.setTimeout(HTTP_TIMEOUT);
@@ -134,7 +138,6 @@ void NoFUSSClientClass::_doUpdate() {
     bool error = false;
     uint8_t updates = 0;
 
-    WiFiClient client;
     ESPhttpUpdate.rebootOnUpdate(false);
 
     if (_newFileSystem.length() > 0) {
@@ -145,8 +148,14 @@ void NoFUSSClientClass::_doUpdate() {
         } else {
             sprintf(url, "%s/%s", _server.c_str(), _newFileSystem.c_str());
         }
-        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(client, url);
 
+        #ifdef HTTPUPDATE_1_2_COMPATIBLE
+            t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(url);
+        #else
+            WiFiClient client;
+            t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(client, url);
+        #endif
+        
         if (ret == HTTP_UPDATE_FAILED) {
             error = true;
             _errorNumber = ESPhttpUpdate.getLastError();
@@ -167,7 +176,13 @@ void NoFUSSClientClass::_doUpdate() {
         } else {
             sprintf(url, "%s/%s", _server.c_str(), _newFirmware.c_str());
         }
-        t_httpUpdate_return ret = ESPhttpUpdate.update(client, url);
+
+        #ifdef HTTPUPDATE_1_2_COMPATIBLE
+            t_httpUpdate_return ret = ESPhttpUpdate.update(url);
+        #else
+            WiFiClient client;
+            t_httpUpdate_return ret = ESPhttpUpdate.update(client, url);
+        #endif
 
         if (ret == HTTP_UPDATE_FAILED) {
             error = true;

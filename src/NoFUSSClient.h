@@ -42,6 +42,7 @@ typedef enum {
 
 #define HTTP_TIMEOUT    10000
 #define HTTP_USERAGENT  "NoFussClient"
+#define HTTPUPDATE_1_2_COMPATIBLE
 
 class NoFUSSClientClass {
 
