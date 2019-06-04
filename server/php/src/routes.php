@@ -46,8 +46,8 @@ $app->get('/', function($request, $response, $args) {
 
             // Version checks (gt==min, ge, lt==max, le, eq)
             if (!compare($entry, 'gt', '<', $version)) continue;
-            if (!compare($entry, 'min', '<', $version)) continue;
             if (!compare($entry, 'ge', '<=', $version)) continue;
+            if (!compare($entry, 'min', '<=', $version)) continue;
             if (!compare($entry, 'lt', '>', $version)) continue;
             if (!compare($entry, 'max', '>', $version)) continue;
             if (!compare($entry, 'le', '>=', $version)) continue;
