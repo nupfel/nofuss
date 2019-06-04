@@ -23,5 +23,10 @@ return [
             'path' => __DIR__ . '/../data/versions.json',
         ],
 
+        // Binaries
+        'binaries' => [
+            'path' => __DIR__ . '/../public/firmware',
+        ],
+
     ],
 ];

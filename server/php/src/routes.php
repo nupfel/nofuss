@@ -4,6 +4,17 @@ function get(&$var, $default = null) {
     return isset($var) ? $var : $default;
 }
 
+/**
+ * Returns TRUE if it matches
+ */
+function compare($entry, $key, $operand, $version) {
+    $value = get($entry['origin'][$key], "*");
+    if ($value != '*') {
+        return (version_compare($value, $version, $operand));
+    }
+    return true;
+}
+
 // Check update entry point
 $app->get('/', function($request, $response, $args) {
 
@@ -33,23 +44,25 @@ $app->get('/', function($request, $response, $args) {
                 }
             }
 
-            // Check if version is same or newer than $_min
-            $_min = get($entry['origin']['min'], "*");
-            if ($_min != '*') {
-                if (version_compare($_min, $version, '>')) continue;
-            }
+            // Version checks (gt==min, ge, lt==max, le, eq)
+            if (!compare($entry, 'gt', '<', $version)) continue;
+            if (!compare($entry, 'min', '<', $version)) continue;
+            if (!compare($entry, 'ge', '<=', $version)) continue;
+            if (!compare($entry, 'lt', '>', $version)) continue;
+            if (!compare($entry, 'max', '>', $version)) continue;
+            if (!compare($entry, 'le', '>=', $version)) continue;
+            if (!compare($entry, 'eq', '==', $version)) continue;
 
-            // Check if version is same or older than $_max
-            $_max = get($entry['origin']['max'], "*");
-            if ($_max != "*") {
-                if (version_compare($_max, $version, '<')) continue;
-            }
-
-            // Check if build is same $_build
-            $_build = get($entry['origin']['build'], "*");
+            // If build_not is defined in the JSON file, then the request must also have defined the build and they must NOT match
+            $_build = get($entry['origin']['build_not'], "*");
             if ($_build != "*") {
                 if ($build == "") continue;
                 if ($build == $_build) continue;
+            }
+
+            // Add SPIFFS key if there is none, required for back-compatibility
+            if (!in_array("spiffs", $entry)) {
+                $entry["spiffs"] = "";
             }
 
             $response->getBody()->write(stripslashes(json_encode($entry['target'])));
@@ -76,3 +89,4 @@ $app->get('/', function($request, $response, $args) {
     return $response;
 
 });
+
