@@ -89,11 +89,21 @@ User Alex Suslov ported the NoFUSS Server to NodeJS. You can check his repo [nod
 
 The versions info is stored in the `data/versions.json` file. This file contains an array of objects with info about version matching and firmware files.
 
-The "origin" key contains filters. The server will apply those filters to the requester info. Version matching is always "more or equal" for minimum version number and "less or equal" for maximum version number. An asterisk (\*) means "any". MAC and device matching is "equals". If you define no filter (i.e. the "origin" key is empty) every request will match. 
+The `origin` key contains filters. The server will apply those filters to the requester info. Version matching is done using different operators:
 
-The "build" filter works slightly different. If defined and different than "*" it will match any request with non-empty `X-ESP8266-BUILD` header that's different from the defined in the rule. This is meant for different build of the same version (problably a development one?) and to avoid a loop it requires the requested to report the build explicitly.
+* `ge` or `min`: Reported version should be greater or equal than the target version
+* `gt`: Striclty greater than
+* `eq`: Strictly equal
+* `lt` or `max`: Less than target version
+* `le`: Less or equal
 
-The target key contains info about version number for the new firmware and paths to the firmware files relative to the `public` folder. If there is no binary for "firmware" or "spiffs" keys, just leave it empty.
+Notice `max` and `min` are there for backwards compatibility and they are not symetric: "more or equal" for minimum version number and "less or equal" for maximum version number. 
+
+An asterisk (`*`) means "any" and it's equivalent to not specifying that key. If specified, the `device` and `mac` keys must match exactly. The `build_not` filter works slightly different. If defined and different than `*` it will match any request with non-empty `X-ESP8266-BUILD` header that's different from the defined in the rule. This is meant for different build of the same version (problably a development one?) and to avoid a loop it requires the requested to report the build explicitly.
+
+If you define no filter (i.e. the `origin` key is empty) every request will match. 
+
+The `target` key contains info about version number for the new firmware and paths to the firmware files relative to the `public` folder. The `firmware` key must be always present. If there is no binary for "firmware" just leave it empty.
 
 ```
 [
@@ -101,9 +111,9 @@ The target key contains info about version number for the new firmware and paths
         "origin": {
             "mac": "5C:CF:7F:8B:6B:26",
             "device": "TEST",
-            "min": "*",
-            "max": "0.1.0",
-            "build": "*"
+            "gt": "*",
+            "lt": "0.1.1",
+            "build_not": "3fe56a4"
         },
         "target": {
             "version": "0.1.1",
