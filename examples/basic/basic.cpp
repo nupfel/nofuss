@@ -1,27 +1,27 @@
 /*
 
-NOFUSS Client Basic Example
-Copyright (C) 2016 by Xose Pérez <xose dot perez at gmail dot com>
+   NOFUSS Client Basic Example
+   Copyright (C) 2016 by Xose Pérez <xose dot perez at gmail dot com>
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-*/
+ */
 
+#include "credentials.h"
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include "NoFUSSClient.h"
-#include "credentials.h"
 
 // -----------------------------------------------------------------------------
 // Configuration
@@ -31,9 +31,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // for specific configuration
 
 #define DEVICE                  "TEST"
-#define VERSION                 "0.0.9"
+#define VERSION                 "1.0.0"
 #define BUILD                   ""
-#define NOFUSS_INTERVAL         10000
 #define WIFI_CONNECT_TIMEOUT    20000
 #define WIFI_RECONNECT_DELAY    5000
 
@@ -47,7 +46,7 @@ void nofussSetup() {
     NoFUSSClient.setDevice(DEVICE);
     NoFUSSClient.setVersion(VERSION);
     NoFUSSClient.setBuild(BUILD);
-    
+
     NoFUSSClient.onMessage([](nofuss_t code) {
 
         if (code == NOFUSS_START) {
@@ -94,18 +93,6 @@ void nofussSetup() {
         }
 
     });
-
-}
-
-void nofussLoop() {
-
-    if (WiFi.status() != WL_CONNECTED) return;
-
-    static unsigned long last_check = 0;
-    if ((last_check > 0) && ((millis() - last_check) < NOFUSS_INTERVAL)) return;
-    last_check = millis();
-
-    NoFUSSClient.handle();
 
 }
 
@@ -172,7 +159,7 @@ void setup() {
     delay(1000);
 
     Serial.begin(115200);
-    //Serial.setDebugOutput(true);
+    Serial.setDebugOutput(true);
     Serial.println();
     Serial.printf("[MAIN] Device: %s\n", DEVICE);
     Serial.printf("[MAIN] Version: %s\n", VERSION);
@@ -183,6 +170,6 @@ void setup() {
 
 void loop() {
     wifiLoop();
-    nofussLoop();
+    NoFUSSClient.handle();
     delay(1);
 }

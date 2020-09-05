@@ -13,3 +13,4 @@ credentials.h
 .clang_complete
 .gcc-flags.json
 remotes
+data/certs.ar
