@@ -159,7 +159,7 @@ void setup() {
     delay(1000);
 
     Serial.begin(115200);
-    Serial.setDebugOutput(true);
+    // Serial.setDebugOutput(true);
     Serial.println();
     Serial.printf("[MAIN] Device: %s\n", DEVICE);
     Serial.printf("[MAIN] Version: %s\n", VERSION);

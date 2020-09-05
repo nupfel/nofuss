@@ -6,13 +6,13 @@
         "type": "git",
         "url": "https://bitbucket.org/xoseperez/nofuss.git"
     },
-    "version": "0.3.0",
+    "version": "0.4.0",
     "license": "GPL-3.0",
     "exclude": "tests",
     "frameworks": "arduino",
     "platforms": "espressif8266",
     "dependencies": [
-        { "name": "ArduinoJson", "version": "5.13.4" }
+        { "name": "ArduinoJson", "version": "6.16.1" }
     ],
     "authors": {
         "name": "Xose Perez",

@@ -85,6 +85,10 @@ The docker container will use the code under `server/php` and, in particular, th
 
 User Alex Suslov ported the NoFUSS Server to NodeJS. You can check his repo [node-nofuss repo on GitHub](https://github.com/alexsuslov/node-nofuss).
 
+### Node-red
+
+There is a flow under `server/node-red/firmware_server.json` that implements a server using CouchDB as the database backend. You will need several external palette modulee. Please install missing palettes when importing the flow.
+
 ## Versions
 
 The versions info is stored in the `data/versions.json` file. This file contains an array of objects with info about version matching and firmware files.
@@ -97,11 +101,11 @@ The `origin` key contains filters. The server will apply those filters to the re
 * `lt` or `max`: Less than target version
 * `le`: Less or equal
 
-Notice `max` and `min` are there for backwards compatibility and they are not symetric: "more or equal" for minimum version number and "less or equal" for maximum version number. 
+Notice `max` and `min` are there for backwards compatibility and they are not symetric: "more or equal" for minimum version number and "less or equal" for maximum version number.
 
 An asterisk (`*`) means "any" and it's equivalent to not specifying that key. If specified, the `device` and `mac` keys must match exactly. The `build_not` filter works slightly different. If defined and different than `*` it will match any request with non-empty `X-ESP8266-BUILD` header that's different from the defined in the rule. This is meant for different build of the same version (problably a development one?) and to avoid a loop it requires the requested to report the build explicitly.
 
-If you define no filter (i.e. the `origin` key is empty) every request will match. 
+If you define no filter (i.e. the `origin` key is empty) every request will match.
 
 The `target` key contains info about version number for the new firmware and paths to the firmware files relative to the `public` folder. The `firmware` key must be always present. If there is no binary for "firmware" just leave it empty.
 

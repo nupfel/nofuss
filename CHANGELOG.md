@@ -3,6 +3,18 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.0] 2020-09-05
+### Added
+- Support for SSL using BearSSL with Mozilla root certificates via LittleFS
+- Added Node-Red server flow
+- LittleFS cert store
+
+### Changed
+- updated to ArduinoJson 6.x
+
+### Fixed
+- skip update if firmware version given by server matches current
+
 ## [0.3.0] 2019-06-04
 ### Added
 - Added more version checks (lt, le, eq, ge, gt)
@@ -13,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Deprecated
 - Use `ge` and `lt` instead of `min` and `max` in filters
-  
+
 ## [0.2.7] 2019-05-26
 ### Fixed
 - Make it backwards compatible using HTTPUPDATE_1_2_COMPATIBLE flag
