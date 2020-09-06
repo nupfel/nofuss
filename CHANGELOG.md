@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.1] 2020-09-07
+### Added
+- pass onStart, onEnd, onError, onProgress methods onto ESP8266HTTPUpdate
+- NO_GLOBAL_NOFUSS flag to prevent global object
+
+### Changed
+- renamed NOFUSS_SERVER to FIRMWARE_URL
+
 ## [0.4.0] 2020-09-05
 ### Added
 - Support for SSL using BearSSL with Mozilla root certificates via LittleFS

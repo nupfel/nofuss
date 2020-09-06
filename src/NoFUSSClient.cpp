@@ -1,6 +1,6 @@
 /*
 
-   NOFUSS Client 0.4.0
+   NOFUSS Client 0.4.1
    Copyright (C) 2016-2017 by Xose Pérez <xose dot perez at gmail dot com>
    Copyright (C) 2020 by Twoflower Tourist <tobi at kitten dot nz>
 
@@ -26,7 +26,7 @@ BearSSL::CertStore certStore;
 void NoFUSSClientClass::_initCertStore() {
     _disabled = false;
 
-    if (_server.startsWith("https")) {
+    if (_fwUrl.startsWith("https")) {
         LittleFS.begin();
         int numCerts = certStore.initCertStore(LittleFS, PSTR("/certs.idx"), PSTR("/certs.ar"));
 
@@ -49,8 +49,8 @@ void NoFUSSClientClass::_initCertStore() {
     }
 }
 
-void NoFUSSClientClass::setServer(String server) {
-    _server = server;
+void NoFUSSClientClass::setFwUrl(String fwUrl) {
+    _fwUrl = fwUrl;
     _initCertStore();
 }
 
@@ -64,6 +64,22 @@ void NoFUSSClientClass::setVersion(String version) {
 
 void NoFUSSClientClass::setBuild(String build) {
     _build = build;
+}
+
+void NoFUSSClientClass::onStart(HTTPUpdateStartCB cbOnStart) {
+    _HttpUpdate.onStart(cbOnStart);
+}
+
+void NoFUSSClientClass::onEnd(HTTPUpdateEndCB cbOnEnd) {
+    _HttpUpdate.onEnd(cbOnEnd);
+}
+
+void NoFUSSClientClass::onError(HTTPUpdateErrorCB cbOnError) {
+    _HttpUpdate.onError(cbOnError);
+}
+
+void NoFUSSClientClass::onProgress(HTTPUpdateProgressCB cbOnProgress) {
+    _HttpUpdate.onProgress(cbOnProgress);
 }
 
 void NoFUSSClientClass::onMessage(TMessageFunction fn) {
@@ -99,25 +115,25 @@ String NoFUSSClientClass::_getPayload() {
     String payload = "";
     HTTPClient http;
 
-    if (_server.startsWith("https://")) {
+    if (_fwUrl.startsWith("https://")) {
         _setClock();
 
         BearSSL::WiFiClientSecure *ssl_client = new BearSSL::WiFiClientSecure();
 
-        bool mfln = ssl_client->probeMaxFragmentLength(_extractDomain(_server), 443, 1024); // domain must be the same as in ESPhttpUpdate.update()
+        bool mfln = ssl_client->probeMaxFragmentLength(_extractDomain(_fwUrl), 443, 1024); // domain must be the same as in _HttpUpdate.update()
         Serial.printf("MFLN supported: %s\n", mfln ? "yes" : "no");
         if (mfln) {
             ssl_client->setBufferSizes(1024, 1024);
         }
         ssl_client->setCertStore(&certStore);
-        http.begin(dynamic_cast<WiFiClient&>(*ssl_client), _server.c_str());
+        http.begin(dynamic_cast<WiFiClient&>(*ssl_client), _fwUrl.c_str());
     }
     else {
 #ifdef HTTPUPDATE_1_2_COMPATIBLE
-        http.begin(_server.c_str());
+        http.begin(_fwUrl.c_str());
 #else
         WiFiClient client;
-        http.begin(client, _server.c_str());
+        http.begin(client, _fwUrl.c_str());
 #endif
     }
 
@@ -195,7 +211,7 @@ void NoFUSSClientClass::_doUpdate() {
     uint8_t updates = 0;
     t_httpUpdate_return ret;
 
-    ESPhttpUpdate.rebootOnUpdate(false);
+    _HttpUpdate.rebootOnUpdate(false);
 
     if (_newFileSystem.length() > 0) {
 
@@ -204,26 +220,26 @@ void NoFUSSClientClass::_doUpdate() {
             url = _newFileSystem;
         }
         else {
-            url = _server + String("/") + _newFileSystem;
+            url = _fwUrl + String("/") + _newFileSystem;
         }
 
         if (url.startsWith("https://")) {
             BearSSL::WiFiClientSecure ssl_client = _createSSLClient(_extractDomain(url));
-            ret = ESPhttpUpdate.updateFS(ssl_client, url);
+            ret = _HttpUpdate.updateFS(ssl_client, url);
         }
         else {
 #ifdef HTTPUPDATE_1_2_COMPATIBLE
-            ret = ESPhttpUpdate.updateSpiffs(url);
+            ret = _HttpUpdate.updateSpiffs(url);
 #else
             WiFiClient client;
-            ret = ESPhttpUpdate.updateFS(client, url);
+            ret = _HttpUpdate.updateFS(client, url);
 #endif
         }
 
         if (ret == HTTP_UPDATE_FAILED) {
             error = true;
-            _errorNumber = ESPhttpUpdate.getLastError();
-            _errorString = ESPhttpUpdate.getLastErrorString();
+            _errorNumber = _HttpUpdate.getLastError();
+            _errorString = _HttpUpdate.getLastErrorString();
             _doCallback(NOFUSS_FILESYSTEM_UPDATE_ERROR);
         }
         else if (ret == HTTP_UPDATE_OK) {
@@ -244,26 +260,26 @@ void NoFUSSClientClass::_doUpdate() {
             url = _newFirmware;
         }
         else {
-            url = _server + String("/") + _newFirmware;
+            url = _fwUrl + String("/") + _newFirmware;
         }
 
         if (url.startsWith("https://")) {
             BearSSL::WiFiClientSecure ssl_client = _createSSLClient(_extractDomain(url));
-            ret = ESPhttpUpdate.update(ssl_client, url);
+            ret = _HttpUpdate.update(ssl_client, url);
         }
         else {
 #ifdef HTTPUPDATE_1_2_COMPATIBLE
-            t_httpUpdate_return ret = ESPhttpUpdate.update(url);
+            t_httpUpdate_return ret = _HttpUpdate.update(url);
 #else
             WiFiClient client;
-            t_httpUpdate_return ret = ESPhttpUpdate.update(client, url);
+            t_httpUpdate_return ret = _HttpUpdate.update(client, url);
 #endif
         }
 
         if (ret == HTTP_UPDATE_FAILED) {
             error = true;
-            _errorNumber = ESPhttpUpdate.getLastError();
-            _errorString = ESPhttpUpdate.getLastErrorString();
+            _errorNumber = _HttpUpdate.getLastError();
+            _errorString = _HttpUpdate.getLastErrorString();
             _doCallback(NOFUSS_FIRMWARE_UPDATE_ERROR);
         } else if (ret == HTTP_UPDATE_OK) {
             updates++;
@@ -352,4 +368,6 @@ void NoFUSSClientClass::handle() {
     _doCallback(NOFUSS_END);
 }
 
+#if !defined(NO_GLOBAL_INSTANCES) && !defined(NO_GLOBAL_NOFUSS)
 NoFUSSClientClass NoFUSSClient;
+#endif

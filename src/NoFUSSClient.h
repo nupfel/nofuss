@@ -1,6 +1,6 @@
 /*
 
-   NOFUSS Client 0.4.0
+   NOFUSS Client 0.4.1
    Copyright (C) 2016-2017 by Xose Pérez <xose dot perez at gmail dot com>
    Copyright (C) 2020 by Twoflower Tourist <tobi at kitten dot nz>
 
@@ -61,12 +61,27 @@ class NoFUSSClientClass {
 
 public:
 
+    NoFUSSClientClass() {
+        _HttpUpdate.setLedPin(LED_BUILTIN, LOW);
+    };
+
+    NoFUSSClientClass(int httpClientTimeout) {
+        _HttpUpdate = ESP8266HTTPUpdate(httpClientTimeout);
+        _HttpUpdate.setLedPin(LED_BUILTIN, LOW);
+    };
+
     typedef std::function<void (nofuss_t)> TMessageFunction;
 
-    void setServer(String server);
+    void setFwUrl(String fwUrl);
     void setDevice(String device);
     void setVersion(String version);
     void setBuild(String build);
+    void onStart(HTTPUpdateStartCB cbOnStart);
+    void onEnd(HTTPUpdateEndCB cbOnEnd);
+    void onError(HTTPUpdateErrorCB cbOnError);
+    void onProgress(HTTPUpdateProgressCB cbOnProgress);
+    void onMessage(TMessageFunction fn);
+    void handle();
 
     String getNewVersion();
     String getNewFirmware();
@@ -75,14 +90,13 @@ public:
     int getErrorNumber();
     String getErrorString();
 
-    void onMessage(TMessageFunction fn);
-    void handle();
-
 private:
 
     bool _disabled;
 
-    String _server;
+    ESP8266HTTPUpdate _HttpUpdate;
+
+    String _fwUrl;
     String _device;
     String _version;
     String _build;
@@ -107,6 +121,8 @@ private:
 
 };
 
+#if !defined(NO_GLOBAL_INSTANCES) && !defined(NO_GLOBAL_NOFUSS)
 extern NoFUSSClientClass NoFUSSClient;
+#endif
 
 #endif     /* _NOFUSS_h */

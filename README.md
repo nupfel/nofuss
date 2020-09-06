@@ -135,7 +135,7 @@ The client library depends on [Benoit Blanchon's ArduinoJson][1] library. It is 
 To use it you only have to configure the global NoFUSSClient object with proper server URL, device name and version in your setup:
 
 ```
-NoFUSSClient.setServer(NOFUSS_SERVER);
+NoFUSSClient.setFwUrl(FIRMWARE_URL);
 NoFUSSClient.setDevice(DEVICE);
 NoFUSSClient.setVersion(VERSION);
 ```

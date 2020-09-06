@@ -41,8 +41,7 @@
 // -----------------------------------------------------------------------------
 
 void nofussSetup() {
-
-    NoFUSSClient.setServer(NOFUSS_SERVER);
+    NoFUSSClient.setFwUrl(FIRMWARE_URL);
     NoFUSSClient.setDevice(DEVICE);
     NoFUSSClient.setVersion(VERSION);
     NoFUSSClient.setBuild(BUILD);
