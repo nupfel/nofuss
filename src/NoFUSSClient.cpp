@@ -31,14 +31,12 @@ void NoFUSSClientClass::_initCertStore() {
         int numCerts = certStore.initCertStore(LittleFS, PSTR("/certs.idx"), PSTR("/certs.ar"));
 
 #ifdef DEBUG_NOFUSS
-        Serial.print(F("Number of CA certs read: "));
+        Serial.print(F("[NOFUSS] Number of CA certs read: "));
         Serial.println(numCerts);
 #endif
 
         if (numCerts == 0) {
-#ifdef DEBUG_NOFUSS
-            Serial.println(F("No certs found. Did you run certs-from-mozill.py and upload the LittleFS directory before running?"));
-#endif
+            Serial.println(F("[NOFUSS] No certs found. Did you run certs-from-mozill.py and upload the LittleFS directory before running?"));
             _disabled = true;
             LittleFS.end();
             return; // Can't connect to anything w/o certs!
@@ -121,7 +119,9 @@ String NoFUSSClientClass::_getPayload() {
         BearSSL::WiFiClientSecure *ssl_client = new BearSSL::WiFiClientSecure();
 
         bool mfln = ssl_client->probeMaxFragmentLength(_extractDomain(_fwUrl), 443, 1024); // domain must be the same as in _HttpUpdate.update()
-        Serial.printf("MFLN supported: %s\n", mfln ? "yes" : "no");
+#ifdef DEBUG_NOFUSS
+        Serial.printf("[NOFUSS] MFLN supported: %s\n", mfln ? "yes" : "no");
+#endif
         if (mfln) {
             ssl_client->setBufferSizes(1024, 1024);
         }
@@ -179,13 +179,16 @@ bool NoFUSSClientClass::_checkUpdates() {
 
     if (error) {
 #ifdef DEBUG_NOFUSS
-        Serial.printf("deserializeJson() failed with code %s\n", error.c_str());
+        Serial.printf("[NOFUSS] deserializeJson() failed with code %s\n", error.c_str());
 #endif
         _doCallback(NOFUSS_PARSE_ERROR);
         return false;
     }
 
     if (jsonDoc.size() == 0) {
+#ifdef DEBUG_NOFUSS
+        Serial.println("[NOFUSS] Empty JSON object");
+#endif
         _doCallback(NOFUSS_UPTODATE);
         return false;
     }
@@ -300,7 +303,7 @@ void NoFUSSClientClass::_setClock() {
     configTime(0, 0, "pool.ntp.org"); // UTC
 
 #ifdef DEBUG_NOFUSS
-    Serial.print(F("Waiting for NTP time sync: "));
+    Serial.print(F("[NOFUSS] Waiting for NTP time sync: "));
 #endif
     time_t now = time(nullptr);
     while (now < 8 * 3600 * 2) {
@@ -320,7 +323,7 @@ void NoFUSSClientClass::_setClock() {
     gmtime_r(&now, &timeinfo);
 
 #ifdef DEBUG_NOFUSS
-    Serial.print(F("Current time: "));
+    Serial.print(F("[NOFUSS] Current time: "));
     Serial.print(asctime(&timeinfo));
 #endif
 }
@@ -343,7 +346,7 @@ BearSSL::WiFiClientSecure NoFUSSClientClass::_createSSLClient(String host) {
     BearSSL::WiFiClientSecure ssl_client;
 
     bool mfln = ssl_client.probeMaxFragmentLength(host, 443, 1024);
-    Serial.printf("MFLN supported: %s\n", mfln ? "yes" : "no");
+    Serial.printf("[NOFUSS] MFLN supported: %s\n", mfln ? "yes" : "no");
     if (mfln) {
         ssl_client.setBufferSizes(1024, 1024);
     }
