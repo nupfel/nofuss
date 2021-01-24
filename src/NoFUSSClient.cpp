@@ -303,7 +303,9 @@ void NoFUSSClientClass::_setClock() {
     configTime(0, 0, NTP_SERVER); // UTC
 
 #ifdef DEBUG_NOFUSS
-    Serial.print(F("[NOFUSS] Waiting for NTP time sync: "));
+    Serial.print(F("[NOFUSS] Waiting for NTP time sync from "));
+    Serial.print(F(NTP_SERVER));
+    Serial.print(F(": "));
 #endif
     time_t now = time(nullptr);
     while (now < 8 * 3600 * 2) {
