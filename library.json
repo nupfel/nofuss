@@ -6,7 +6,7 @@
         "type": "git",
         "url": "https://bitbucket.org/xoseperez/nofuss.git"
     },
-    "version": "0.4.1",
+    "version": "0.4.2",
     "license": "GPL-3.0",
     "exclude": "tests",
     "frameworks": "arduino",
