@@ -348,7 +348,9 @@ BearSSL::WiFiClientSecure NoFUSSClientClass::_createSSLClient(String host) {
     BearSSL::WiFiClientSecure ssl_client;
 
     bool mfln = ssl_client.probeMaxFragmentLength(host, 443, 1024);
+#ifdef DEBUG_NOFUSS
     Serial.printf("[NOFUSS] MFLN supported: %s\n", mfln ? "yes" : "no");
+#endif
     if (mfln) {
         ssl_client.setBufferSizes(1024, 1024);
     }
