@@ -54,6 +54,9 @@ typedef enum {
 #ifndef NOFUSS_INTERVAL
 #define NOFUSS_INTERVAL 1000 * 60 * 10 // 10 min.
 #endif
+#ifndef NTP_SERVER
+#define NTP_SERVER "pool.ntp.org"
+#endif
 #define HTTP_TIMEOUT    10000
 #define HTTP_USERAGENT  "NoFussClient"
 

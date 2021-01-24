@@ -300,7 +300,7 @@ void NoFUSSClientClass::_doUpdate() {
 
 // Set time via NTP, as required for x.509 validation
 void NoFUSSClientClass::_setClock() {
-    configTime(0, 0, "pool.ntp.org"); // UTC
+    configTime(0, 0, NTP_SERVER); // UTC
 
 #ifdef DEBUG_NOFUSS
     Serial.print(F("[NOFUSS] Waiting for NTP time sync: "));
